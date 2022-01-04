@@ -11,7 +11,7 @@ public class ShipController : MonoBehaviour
     public float rotationSpeed = 1.0f;
 
     [Header("References")]
-    [SerializeField] new Rigidbody2D _rigidbody;
+    [SerializeField] Rigidbody2D _rigidbody = null;
 
     Vector2 _moveVec = new Vector2();
 

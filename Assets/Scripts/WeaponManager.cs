@@ -13,17 +13,18 @@ public class WeaponManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] Weapon primaryWeapon = null;
-    [SerializeField] Weapon secondaryWeapon = null;
     [SerializeField] GameObject ownerEntity = null;
 
     [HideInInspector] public bool canAttack = true;
 
     float _internalDowntime = 0.0f;
 
+    Weapon _currentWeapon = null;
 
     private void Awake()
     {
         primaryWeapon.weaponOwner = ownerEntity;
+        _currentWeapon = primaryWeapon;
     }
 
     private void Update()
@@ -33,31 +34,20 @@ public class WeaponManager : MonoBehaviour
             OnFinishAttack.Invoke();
     }
 
-    public void OnPrimaryWeapon()
+    public void OnFIre(CallbackContext ctx)
     {
-        if (primaryWeapon.GetCooldown() > 0.0f || primaryWeapon.IsAttacking())
+        if (_currentWeapon.GetCooldown() > 0.0f || _currentWeapon.IsAttacking() || !ctx.performed)
             return;
         _internalDowntime = 0.0f;
         OnBeginAttack.Invoke();
-        primaryWeapon.Attack();
+        _currentWeapon.Attack();
+        if (_currentWeapon != primaryWeapon)
+            _currentWeapon = primaryWeapon;
     }
 
-    public void OnSecondaryWeapon()
+    public void SetCurrentWeapon(Weapon weapon)
     {
-        if (!secondaryWeapon.gameObject.activeSelf || secondaryWeapon.GetCooldown() > 0.0f || secondaryWeapon.IsAttacking())
-            return;
-        _internalDowntime = 0.0f;
-        OnBeginAttack.Invoke();
-        secondaryWeapon.Attack();
-    }
-
-    public void SetSecondaryWeapon(Weapon weapon)
-    {
-        secondaryWeapon = weapon;
-    }
-
-    public void ActivateSecondaryWeapon(){
-        secondaryWeapon.gameObject.SetActive(true);
+        _currentWeapon = weapon;
     }
 
 }

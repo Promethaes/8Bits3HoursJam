@@ -22,15 +22,11 @@ public class Weapon : MonoBehaviour
     {
         _cooldown = cooldown;
         OnEnableWeapon.Invoke();
-        IEnumerator Cooldown()
-        {
-            while (true)
-            {
-                yield return new WaitForEndOfFrame();
-                _cooldown -= Time.deltaTime;
-            }
-        }
-        StartCoroutine(Cooldown());
+    }
+
+    private void Update()
+    {
+        _cooldown -= Time.deltaTime;
     }
 
     private void OnDisable()
